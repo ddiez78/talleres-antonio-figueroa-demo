@@ -13,6 +13,7 @@
 :root {
   --mk-shots: 14;
   --mk-nshots: 14;
+  --shot-scroll: 190vh;
   --mk-fondo: #0f1419;
   --mk-texto: #e8edf2;
   --mk-primario: #1a2b3c;
@@ -60,7 +61,8 @@ html, body {
 
 /* ─── FILM ──────────────────────────────────────── */
 .mk-film {
-  height: 1680vh !important;
+  height: calc(var(--mk-shots) * var(--shot-scroll)) !important;
+  min-height: 2660vh !important;
   position: relative !important;
 }
 .mk-film-stage {
@@ -550,10 +552,12 @@ function syncP() {
 
   const shots = document.querySelectorAll('.mk-zshot');
   const n = shots.length - 1;
+  const position = p * n;
   shots.forEach((el, i) => {
-    const dist = Math.abs(p * n - i);
-    el.style.opacity = Math.max(0, 1 - dist * 0.85).toFixed(3);
-    el.style.transform = `translate3d(0, ${dist * 18}px, ${(i - p * n) * -90}px)`;
+    const dist = Math.abs(position - i);
+    const visible = Math.max(0, 1 - dist * 0.62);
+    el.style.opacity = dist < 0.18 ? '1' : visible.toFixed(3);
+    el.style.transform = `translate3d(0, ${dist * 10}px, ${(i - position) * -64}px)`;
     el.style.pointerEvents = dist < 0.5 ? 'auto' : 'none';
   });
 
