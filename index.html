@@ -13,7 +13,6 @@
 :root {
   --mk-shots: 14;
   --mk-nshots: 14;
-  --shot-scroll: 190vh;
   --mk-fondo: #0f1419;
   --mk-texto: #e8edf2;
   --mk-primario: #1a2b3c;
@@ -61,17 +60,26 @@ html, body {
 
 /* ─── FILM ──────────────────────────────────────── */
 .mk-film {
-  height: calc(var(--mk-shots) * var(--shot-scroll)) !important;
-  min-height: 2660vh !important;
-  position: relative !important;
-}
-.mk-film-stage {
-  position: sticky !important;
-  top: 0 !important;
-  height: 100vh !important;
-  overflow: hidden;
+  position: relative;
+  height: 2660vh;
   background: var(--canvas);
 }
+.mk-film-stage {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--canvas);
+  z-index: 1;
+  perspective: 1100px;
+  perspective-origin: 50% 46%;
+  contain: layout paint style;
+}
+.mk-film-stage.is-before { position: absolute; top: 0; bottom: auto; }
+.mk-film-stage.is-after  { position: absolute; top: auto; bottom: 0; }
+.mk-film-stage.is-active { position: fixed; top: 0; bottom: auto; }
+.mk-film-stage.is-after .mk-zshot { opacity: 0; pointer-events: none; }
 
 /* ─── ZSHOTS ──────────────────────────────────── */
 .mk-zshot {
@@ -79,10 +87,14 @@ html, body {
   inset: 0;
   display: grid;
   place-items: center;
-  padding: clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px) clamp(20px,5vw,60px);
-  opacity: 0;
+  padding: clamp(70px, 8vw, 100px) clamp(20px, 5vw, 80px) clamp(20px,5vw,60px);
+  opacity: var(--shot-opacity, 0);
   pointer-events: none;
+  will-change: transform, opacity;
+  isolation: isolate;
+  transition: opacity .15s ease-out;
 }
+.mk-zshot[data-live] { pointer-events: auto; }
 
 /* ─── BG FOTO ─────────────────────────────────── */
 .bg {
@@ -329,7 +341,7 @@ footer a { color: var(--accent); text-decoration: none; font-weight: 700; }
 <div class="mk-film-stage mk-tunnel">
 
   <!-- SHOT 0 · HERO — solo nombre, primer frame limpio -->
-  <article class="mk-zshot" style="--zi:0; opacity:1;">
+  <article class="mk-zshot" style="--zi:0; --shot-opacity:1;" data-live>
     <div class="hero-card">
       <p class="kicker">Taller mecánico · Toledo</p>
       <h1 class="display">Talleres<br><span class="accent-text">Antonio</span><br>Figueroa</h1>
@@ -538,49 +550,74 @@ footer a { color: var(--accent); text-decoration: none; font-weight: 700; }
 
 <script src="motion.js"></script>
 <script>
-history.scrollRestoration = 'manual';
-window.addEventListener('load', () => { if (scrollY < 8) scrollTo(0, 0); });
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+window.addEventListener('pageshow', function(){ if (window.scrollY < 2600) window.scrollTo(0,0); });
+(function(){
+  var film  = document.querySelector('.mk-film');
+  var stage = document.querySelector('.mk-film-stage');
+  if (!film || !stage) return;
+  var shots = [].slice.call(stage.querySelectorAll('.mk-zshot'));
+  var n = shots.length || 14;
 
-function syncP() {
-  const f = document.querySelector('.mk-film');
-  const s = document.querySelector('.mk-film-stage');
-  if (!f || !s) return;
-  const r = f.getBoundingClientRect();
-  const max = Math.max(1, r.height - innerHeight);
-  const p = Math.min(1, Math.max(0, -r.top / max));
-  s.style.setProperty('--mk-p', p.toFixed(4));
-
-  const shots = document.querySelectorAll('.mk-zshot');
-  const n = shots.length - 1;
-  const position = p * n;
-  shots.forEach((el, i) => {
-    const dist = Math.abs(position - i);
-    const visible = Math.max(0, 1 - dist * 0.62);
-    el.style.opacity = dist < 0.18 ? '1' : visible.toFixed(3);
-    el.style.transform = `translate3d(0, ${dist * 10}px, ${(i - position) * -64}px)`;
-    el.style.pointerEvents = dist < 0.5 ? 'auto' : 'none';
-  });
-
-  // mk-counter animation
-  if (p > 0.45 && p < 0.65) {
-    document.querySelectorAll('.mk-counter').forEach(el => {
-      if (el.dataset.done) return;
-      el.dataset.done = '1';
-      const target = +el.dataset.target;
-      let start = 0;
-      const step = () => {
-        start = Math.min(start + Math.ceil(target / 30), target);
-        el.textContent = start + (target >= 30 && target <= 30 ? '+' : '');
-        if (start < target) requestAnimationFrame(step);
-      };
-      requestAnimationFrame(step);
-    });
+  function setStage(mode) {
+    stage.classList.remove('is-before','is-active','is-after');
+    stage.classList.add(mode);
   }
-}
 
-addEventListener('scroll', syncP, { passive: true });
-addEventListener('resize', syncP);
-syncP();
+  function update() {
+    var start = film.offsetTop;
+    var total = Math.max(1, film.offsetHeight - window.innerHeight);
+    var raw   = (window.scrollY - start) / total;
+    var p     = Math.max(0, Math.min(1, raw));
+    film.style.setProperty('--mk-p', p.toFixed(4));
+
+    if      (raw < 0) { setStage('is-before'); }
+    else if (raw > 1) { setStage('is-after');  }
+    else              { setStage('is-active');  }
+
+    var intro = 0.05; // primer scroll retiene el hero
+    shots.forEach(function(shot) {
+      var zi = parseFloat(shot.style.getPropertyValue('--zi')) || 0;
+      var opacity;
+      if (zi === 0) {
+        // hero: visible hasta que termina el intro
+        opacity = p < intro
+          ? 1
+          : Math.max(0, Math.min(1, (intro + 0.018 - p) / 0.018));
+      } else if (p < intro * 0.92) {
+        opacity = 0;
+      } else {
+        var q      = Math.max(0, Math.min(1, (p - intro) / (1 - intro)));
+        var f      = q * (n - 2) - (zi - 1);
+        var fadeIn  = Math.max(0, Math.min(1, (f + 0.95) / 0.48));
+        var fadeOut = Math.max(0, Math.min(1, (0.72 - f) / 0.48));
+        opacity = Math.min(fadeIn, fadeOut);
+      }
+      shot.style.setProperty('--shot-opacity', opacity.toFixed(3));
+      if (opacity > 0.36) shot.setAttribute('data-live','');
+      else                shot.removeAttribute('data-live');
+    });
+
+    // mk-counter en shot 7 (cifras)
+    if (p > 0.45 && p < 0.65) {
+      document.querySelectorAll('.mk-counter').forEach(function(el) {
+        if (el.dataset.done) return;
+        el.dataset.done = '1';
+        var target = +el.dataset.target;
+        var cur = 0;
+        (function step() {
+          cur = Math.min(cur + Math.ceil(target / 30), target);
+          el.textContent = cur + (target === 30 ? '+' : '');
+          if (cur < target) requestAnimationFrame(step);
+        })();
+      });
+    }
+  }
+
+  addEventListener('scroll', update, {passive:true});
+  addEventListener('resize', update, {passive:true});
+  addEventListener('load',   update);
+})();
 </script>
 </body>
 </html>
