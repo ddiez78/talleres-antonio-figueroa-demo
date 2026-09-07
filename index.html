@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talleres Antonio Figueroa — Toledo</title>
+<meta name="description" content="Taller de reparación y mantenimiento de vehículos en Toledo. Calle Trinitarios 23. Demo orientativa preparada por Disflim.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="motion.css">
+<style>
+:root {
+  --mk-shots: 14;
+  --mk-nshots: 14;
+  --mk-fondo: #0f1419;
+  --mk-texto: #e8edf2;
+  --mk-primario: #1a2b3c;
+  --mk-secundario: #f5a623;
+  --ink: #e8edf2;
+  --ink-soft: #8da0b3;
+  --accent: #f5a623;
+  --canvas: #0f1419;
+  --surface: rgba(255,255,255,.07);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+/* ─── NAV FIJA ─────────────────────────────────── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  background: rgba(15,20,25,.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(245,166,35,.15);
+}
+.nav-brand {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  letter-spacing: .08em;
+  color: #fff;
+}
+.nav-tel {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ─── FILM ──────────────────────────────────────── */
+.mk-film {
+  height: 1680vh !important;
+  position: relative !important;
+}
+.mk-film-stage {
+  position: sticky !important;
+  top: 0 !important;
+  height: 100vh !important;
+  overflow: hidden;
+  background: var(--canvas);
+}
+
+/* ─── ZSHOTS ──────────────────────────────────── */
+.mk-zshot {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: clamp(60px, 8vw, 100px) clamp(20px, 5vw, 80px) clamp(20px,5vw,60px);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ─── BG FOTO ─────────────────────────────────── */
+.bg {
+  position: absolute;
+  inset: -6%;
+  z-index: -2;
+}
+.bg img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  filter: brightness(.35) saturate(.8);
+}
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(10,15,20,.92) 0%, rgba(10,15,20,.55) 60%, rgba(10,15,20,.80) 100%);
+  z-index: -1;
+}
+
+/* ─── CARDS ───────────────────────────────────── */
+.card {
+  max-width: 760px;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid rgba(245,166,35,.2);
+  border-radius: 24px;
+  padding: clamp(28px, 4vw, 52px);
+  backdrop-filter: blur(18px);
+}
+.hero-card {
+  text-align: center;
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+}
+.wide-card { max-width: 900px; }
+
+/* ─── TIPO ────────────────────────────────────── */
+.kicker {
+  display: inline-block;
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 800;
+  margin-bottom: 14px;
+}
+.display {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(56px, 11vw, 130px);
+  line-height: .92;
+  letter-spacing: .03em;
+  color: #fff;
+}
+.headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(40px, 7vw, 86px);
+  line-height: .95;
+  letter-spacing: .03em;
+  color: #fff;
+}
+.subhead {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(28px, 4vw, 52px);
+  line-height: 1;
+  letter-spacing: .04em;
+  color: #fff;
+}
+.body-l {
+  font-size: clamp(16px, 1.8vw, 20px);
+  line-height: 1.6;
+  color: var(--ink-soft);
+  margin-top: 16px;
+}
+.accent-text { color: var(--accent); }
+
+/* ─── SERVICIOS GRID ──────────────────────────── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  max-width: 860px;
+  width: 100%;
+}
+.service-item {
+  background: var(--surface);
+  border: 1px solid rgba(245,166,35,.15);
+  border-radius: 16px;
+  padding: 24px;
+}
+.service-num {
+  font-size: 11px;
+  letter-spacing: .2em;
+  color: var(--accent);
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+.service-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(22px, 3vw, 34px);
+  color: #fff;
+  margin-bottom: 6px;
+  letter-spacing: .04em;
+}
+.service-desc {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+/* ─── CIFRAS ──────────────────────────────────── */
+.stats-row {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+}
+.stat {
+  text-align: center;
+}
+.stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(60px, 10vw, 120px);
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: .03em;
+}
+.stat-label {
+  font-size: 13px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-top: 4px;
+}
+
+/* ─── QUOTE ───────────────────────────────────── */
+.quote-block {
+  max-width: 640px;
+  text-align: center;
+}
+.quote-mark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  color: var(--accent);
+  line-height: .6;
+  margin-bottom: 16px;
+}
+.quote-text {
+  font-size: clamp(20px, 3vw, 32px);
+  line-height: 1.4;
+  color: #fff;
+  font-style: italic;
+}
+.quote-author {
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin-top: 16px;
+  letter-spacing: .1em;
+}
+
+/* ─── CONTACT ─────────────────────────────────── */
+.contact-block {
+  max-width: 600px;
+  text-align: center;
+}
+.contact-address {
+  font-size: clamp(18px, 2.5vw, 26px);
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin-top: 16px;
+}
+.contact-address strong { color: #fff; }
+.cta-btn {
+  display: inline-block;
+  background: var(--accent);
+  color: #0f1419;
+  font-weight: 800;
+  font-size: 17px;
+  padding: 16px 32px;
+  border-radius: 999px;
+  text-decoration: none;
+  margin-top: 28px;
+  letter-spacing: .02em;
+}
+
+/* ─── CLOSE ───────────────────────────────────── */
+.close-card {
+  max-width: 640px;
+  text-align: center;
+}
+.disflim-badge {
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(245,166,35,.5);
+  margin-top: 24px;
+}
+
+/* ─── FOOTER ─────────────────────────────────── */
+footer {
+  background: #080c10;
+  color: var(--ink-soft);
+  padding: 48px 40px;
+  text-align: center;
+  border-top: 1px solid rgba(245,166,35,.1);
+}
+footer h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(32px, 5vw, 60px);
+  color: #fff;
+  letter-spacing: .05em;
+  margin-bottom: 16px;
+}
+footer p { font-size: 15px; line-height: 1.7; margin: 6px 0; }
+footer a { color: var(--accent); text-decoration: none; font-weight: 700; }
+.footer-note {
+  margin-top: 32px;
+  font-size: 11px;
+  letter-spacing: .1em;
+  opacity: .5;
+}
+
+/* ─── RESPONSIVE ──────────────────────────────── */
+@media (max-width: 700px) {
+  .nav { padding: 12px 18px; }
+  .services-grid { grid-template-columns: 1fr; gap: 12px; }
+  .stats-row { gap: 24px; }
+  .card, .wide-card { border-radius: 18px; padding: 22px; }
+  footer { padding: 36px 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV FIJA -->
+<nav class="nav">
+  <span class="nav-brand">Talleres Antonio Figueroa</span>
+  <a class="nav-tel" href="tel:+34925220624">925 220 624</a>
+</nav>
+
+<!-- PELÍCULA 3D -->
+<main class="mk-film" data-mk-scrolly data-mk-shots="14" style="--mk-nshots:14">
+<div class="mk-film-stage mk-tunnel">
+
+  <!-- SHOT 0 · HERO — solo nombre, primer frame limpio -->
+  <article class="mk-zshot" style="--zi:0; opacity:1;">
+    <div class="hero-card">
+      <p class="kicker">Taller mecánico · Toledo</p>
+      <h1 class="display">Talleres<br><span class="accent-text">Antonio</span><br>Figueroa</h1>
+      <p style="font-size:13px;color:var(--ink-soft);margin-top:22px;letter-spacing:.12em;text-transform:uppercase;">Desliza para ver la propuesta</p>
+    </div>
+  </article>
+
+  <!-- SHOT 1 · Presentación + foto taller -->
+  <article class="mk-zshot" style="--zi:1;">
+    <div class="bg mk-zdepth" style="--z:-200px;">
+      <img src="https://images.unsplash.com/photo-1637032000920-16db1abd57d8?w=1800&q=80" alt="Taller mecánico">
+    </div>
+    <div class="scrim"></div>
+    <div class="card mk-zdepth" style="--z:80px;">
+      <span class="kicker">En el corazón de Toledo</span>
+      <h2 class="headline">Treinta años<br>arreglando lo<br><span class="accent-text">que importa.</span></h2>
+      <p class="body-l">Desde 1993, Talleres Antonio Figueroa repara y mantiene vehículos en la Calle de los Trinitarios, en pleno casco histórico de Toledo.</p>
+    </div>
+  </article>
+
+  <!-- SHOT 2 · Historia -->
+  <article class="mk-zshot" style="--zi:2;">
+    <div class="bg mk-zdepth" style="--z:-200px;">
+      <img src="https://images.unsplash.com/photo-1631556797978-97a73ce2ee2b?w=1800&q=80" alt="Mecánico trabajando">
+    </div>
+    <div class="scrim"></div>
+    <div class="card mk-zdepth" style="--z:80px;">
+      <span class="kicker">Desde 1993</span>
+      <h2 class="headline">Más de 30 años<br>de <span class="accent-text">confianza</span><br>en Toledo.</h2>
+      <p class="body-l">Un negocio con historia, mecánicos expertos y clientes que vuelven año tras año. Taller autorizado Magneti Marelli, referencia en piezas y sistemas de automoción.</p>
+    </div>
+  </article>
+
+  <!-- SHOT 3 · Momento peak — profundidad cinematic -->
+  <article class="mk-zshot" style="--zi:3;">
+    <div class="bg mk-zdepth" style="--z:-220px;">
+      <img src="https://images.unsplash.com/photo-1625047509248-ec889cbff17f?w=1800&q=80" alt="Motor de coche en reparación">
+    </div>
+    <div class="scrim"></div>
+    <div class="card mk-zdepth" style="--z:100px; text-align:center; max-width:700px;">
+      <p class="quote-mark">"</p>
+      <p class="quote-text">Que el conductor sepa que puede dejar su coche en buenas manos — antes de cruzar la puerta.</p>
+    </div>
+  </article>
+
+  <!-- SHOT 4 · Servicios (grid 2x2) -->
+  <article class="mk-zshot" style="--zi:4;">
+    <div style="width:100%; display:flex; flex-direction:column; align-items:center; gap:20px;">
+      <span class="kicker">Especialidades</span>
+      <div class="services-grid">
+        <div class="service-item">
+          <div class="service-num">01</div>
+          <div class="service-title">Reparaciones eléctricas</div>
+          <p class="service-desc">Taller especializado en sistemas eléctricos y electrónica de vehículo. Autorizado Magneti Marelli.</p>
+        </div>
+        <div class="service-item">
+          <div class="service-num">02</div>
+          <div class="service-title">Diagnosis de averías</div>
+          <p class="service-desc">Equipos de diagnosis avanzada para identificar cualquier fallo rápido y con precisión.</p>
+        </div>
+        <div class="service-item">
+          <div class="service-num">03</div>
+          <div class="service-title">Mantenimiento</div>
+          <p class="service-desc">Revisiones periódicas, cambio de aceite, frenos, filtros y todo lo que necesita tu vehículo para estar a punto.</p>
+        </div>
+        <div class="service-item">
+          <div class="service-num">04</div>
+          <div class="service-title">Reparación mecánica</div>
+          <p class="service-desc">Motor, transmisión, suspensión, dirección. Reparamos lo que otros no encuentran.</p>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- SHOT 5 · Eléctrico / especialización -->
+  <article class="mk-zshot" style="--zi:5;">
+    <div class="bg mk-zdepth" style="--z:-200px;">
+      <img src="https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?w=1800&q=80" alt="Electrónica de vehículo">
+    </div>
+    <div class="scrim"></div>
+    <div class="card mk-zdepth" style="--z:80px;">
+      <span class="kicker">Especialización</span>
+      <h2 class="headline">Expertos en<br><span class="accent-text">eléctrico</span><br>y diagnosis.</h2>
+      <p class="body-l">Sistemas de inyección, airbags, ABS, climatización, centralitas. La electrónica moderna requiere formación y equipos actualizados — aquí los tienen.</p>
+    </div>
+  </article>
+
+  <!-- SHOT 6 · Mantenimiento preventivo -->
+  <article class="mk-zshot" style="--zi:6;">
+    <div class="bg mk-zdepth" style="--z:-200px;">
+      <img src="https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1800&q=80" alt="Revisión de vehículo">
+    </div>
+    <div class="scrim"></div>
+    <div class="card mk-zdepth" style="--z:80px;">
+      <span class="kicker">Mantenimiento preventivo</span>
+      <h2 class="headline">Un coche cuidado<br>es un coche<br><span class="accent-text">fiable.</span></h2>
+      <p class="body-l">Mejor prevenir que reparar. Las revisiones periódicas alargan la vida del vehículo y evitan averías inesperadas en el peor momento.</p>
+    </div>
+  </article>
+
+  <!-- SHOT 7 · Cifras reales -->
+  <article class="mk-zshot" style="--zi:7;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:40px; width:100%;">
+      <span class="kicker">En números</span>
+      <div class="stats-row">
+        <div class="stat">
+          <div class="stat-num mk-counter" data-target="30">30</div>
+          <div class="stat-label">Años de trayectoria</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num" style="font-size:clamp(50px,8vw,100px);">4,5<span style="font-size:.5em;color:#fff;">★</span></div>
+          <div class="stat-label">Valoración Google</div>
+        </div>
+        <div class="stat">
+          <div class="stat-num mk-counter" data-target="39">39</div>
+          <div class="stat-label">Reseñas verificadas</div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- SHOT 8 · Reseña cliente -->
+  <article class="mk-zshot" style="--zi:8;">
+    <div class="bg mk-zdepth" style="--z:-200px;">
+      <img src="https://images.unsplash.com/photo-1632823471565-1ecdf5c2d42f?w=1800&q=80" alt="Taller Toledo">
+    </div>
+    <div class="scrim"></div>
+    <div class="quote-block mk-zdepth" style="--z:80px;">
+      <div class="quote-mark">"</div>
+      <p class="quote-text">Muy buenos profesionales y calidad en el servicio. Acceso para sillas de ruedas, muy cómodo para todos.</p>
+      <p class="quote-author">— Cliente verificado en Google · ★★★★★</p>
+    </div>
+  </article>
+
+  <!-- SHOT 9 · Reseña 2 -->
+  <article class="mk-zshot" style="--zi:9;">
+    <div class="quote-block">
+      <div class="quote-mark" style="color:var(--accent);">"</div>
+      <p class="quote-text" style="font-size:clamp(22px,3.5vw,42px);">Llevas el coche y sabes que vuelve en perfectas condiciones. Sin sorpresas.</p>
+      <p class="quote-author">— Cliente habitual · Toledo</p>
+      <div style="margin-top:20px; color:var(--accent); font-size:28px; letter-spacing:.1em;">★★★★★</div>
+    </div>
+  </article>
+
+  <!-- SHOT 10 · Magneti Marelli / autorizado -->
+  <article class="mk-zshot" style="--zi:10;">
+    <div class="bg mk-zdepth" style="--z:-200px;">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1800&q=80" alt="Piezas de calidad">
+    </div>
+    <div class="scrim"></div>
+    <div class="card mk-zdepth" style="--z:80px;">
+      <span class="kicker">Calidad garantizada</span>
+      <h2 class="headline">Autorizado<br><span class="accent-text">Magneti Marelli.</span></h2>
+      <p class="body-l">Recambios y componentes de primera línea. El rótulo de Magneti Marelli en la entrada no es casual: es una promesa de calidad en cada pieza.</p>
+    </div>
+  </article>
+
+  <!-- SHOT 11 · Accesibilidad + Toledo -->
+  <article class="mk-zshot" style="--zi:11;">
+    <div class="bg mk-zdepth" style="--z:-200px;">
+      <img src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=1800&q=80" alt="Toledo">
+    </div>
+    <div class="scrim"></div>
+    <div class="card mk-zdepth" style="--z:80px;">
+      <span class="kicker">Accesible para todos</span>
+      <h2 class="headline">Acceso para<br>sillas de ruedas<br>y <span class="accent-text">aseos.</span></h2>
+      <p class="body-l">Un taller que piensa en la comodidad de todos sus clientes. Ubicado en el casco histórico de Toledo, junto a la Calle Cardenal Tavera.</p>
+    </div>
+  </article>
+
+  <!-- SHOT 12 · Ubicación + CTA mapa -->
+  <article class="mk-zshot" style="--zi:12;">
+    <div class="contact-block">
+      <span class="kicker">Dónde estamos</span>
+      <h2 class="headline">Calle de los<br><span class="accent-text">Trinitarios, 23</span></h2>
+      <p class="contact-address">
+        <strong>Talleres Antonio Figueroa S.L.</strong><br>
+        C/ Trinitarios 23 · 45003 Toledo<br>
+        <a href="tel:+34925220624" style="color:var(--accent); text-decoration:none; font-weight:700;">925 220 624</a>
+      </p>
+      <a class="cta-btn" href="https://www.google.com/maps/search/?api=1&query=39.8657891,-4.0226865" target="_blank">Ver en Google Maps →</a>
+    </div>
+  </article>
+
+  <!-- SHOT 13 · Cierre Disflim -->
+  <article class="mk-zshot" style="--zi:13;">
+    <div class="close-card">
+      <span class="kicker">Demo orientativa</span>
+      <h2 class="headline">Una base para<br>captar <span class="accent-text">mejor.</span></h2>
+      <p class="body-l">Adaptada con fotos reales del taller, servicios completos, formulario de cita y presupuesto online — esta web podría estar captando clientes hoy.</p>
+      <p class="disflim-badge">Demo preparada por Disflim · disflim.com</p>
+    </div>
+  </article>
+
+</div>
+</main>
+
+<!-- FOOTER ESTÁTICO -->
+<footer>
+  <h2>Talleres Antonio Figueroa</h2>
+  <p>C/ Trinitarios, 23 · 45003 Toledo</p>
+  <p><a href="tel:+34925220624">925 220 624</a></p>
+  <p><a href="https://www.google.com/maps/search/?api=1&query=39.8657891,-4.0226865" target="_blank">Ver ubicación en el mapa →</a></p>
+  <p class="footer-note">Demo orientativa preparada por Disflim con información pública disponible.</p>
+</footer>
+
+<script src="motion.js"></script>
+<script>
+history.scrollRestoration = 'manual';
+window.addEventListener('load', () => { if (scrollY < 8) scrollTo(0, 0); });
+
+function syncP() {
+  const f = document.querySelector('.mk-film');
+  const s = document.querySelector('.mk-film-stage');
+  if (!f || !s) return;
+  const r = f.getBoundingClientRect();
+  const max = Math.max(1, r.height - innerHeight);
+  const p = Math.min(1, Math.max(0, -r.top / max));
+  s.style.setProperty('--mk-p', p.toFixed(4));
+
+  const shots = document.querySelectorAll('.mk-zshot');
+  const n = shots.length - 1;
+  shots.forEach((el, i) => {
+    const dist = Math.abs(p * n - i);
+    el.style.opacity = Math.max(0, 1 - dist * 0.85).toFixed(3);
+    el.style.transform = `translate3d(0, ${dist * 18}px, ${(i - p * n) * -90}px)`;
+    el.style.pointerEvents = dist < 0.5 ? 'auto' : 'none';
+  });
+
+  // mk-counter animation
+  if (p > 0.45 && p < 0.65) {
+    document.querySelectorAll('.mk-counter').forEach(el => {
+      if (el.dataset.done) return;
+      el.dataset.done = '1';
+      const target = +el.dataset.target;
+      let start = 0;
+      const step = () => {
+        start = Math.min(start + Math.ceil(target / 30), target);
+        el.textContent = start + (target >= 30 && target <= 30 ? '+' : '');
+        if (start < target) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  }
+}
+
+addEventListener('scroll', syncP, { passive: true });
+addEventListener('resize', syncP);
+syncP();
+</script>
+</body>
+</html>
