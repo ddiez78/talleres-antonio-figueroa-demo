@@ -588,7 +588,7 @@ window.addEventListener('pageshow', function(){ if (window.scrollY < 2600) windo
         opacity = 0;
       } else {
         var q      = Math.max(0, Math.min(1, (p - intro) / (1 - intro)));
-        var f      = q * (n - 2) - (zi - 1);
+        var f      = q * (n - 1) - zi;
         var fadeIn  = Math.max(0, Math.min(1, (f + 0.95) / 0.48));
         var fadeOut = Math.max(0, Math.min(1, (0.72 - f) / 0.48));
         opacity = Math.min(fadeIn, fadeOut);
